@@ -1,32 +1,36 @@
 const container = document.querySelector(".container");
+const numberBtn = document.querySelector("#number-btn");
+const clearBtn = document.querySelector("#clear-btn");
 
 function displayGrids(number) {
+  document.documentElement.style.setProperty("--cols", number);
+  // container.innerHTML = "";
   for (let i = 0; i < number * number; i++) {
     const square = document.createElement("div");
     container.appendChild(square);
     square.classList.add("square");
-    document.documentElement.style.setProperty("--cols", number);
 
-    square.addEventListener("mouseenter", function () {
-      document.documentElement.style.setProperty("--rgb", randomRGB());
-      this.classList.toggle("hover");
+    square.addEventListener("mouseover", function () {
+      square.style.backgroundColor = randomRGB();
     });
-    square.addEventListener("mouseleave", function () {
-      this.classList.toggle("hover");
+    square.addEventListener("clear", function (e) {
+      e.currentTarget.style.backgroundColor = "white";
     });
   }
-  const button = document.querySelector("button");
-  button.addEventListener("click", function () {
-    let number = +prompt("Squares per side: ", 0);
-    if (number > 100) number = 100;
-    const squares = document.querySelectorAll(".square");
-    squares.forEach((square) => {
-      square.remove();
-    });
-    displayGrids(number);
-  });
 }
 
+numberBtn.addEventListener("click", function () {
+  let number = +prompt("Squares per side: ", 16);
+    if (number > 100) number = 100;
+    container.innerHTML=""
+  displayGrids(number);
+});
+
+clearBtn.addEventListener("click", () => {
+  document
+    .querySelectorAll(".square")
+    .forEach((sq) => sq.dispatchEvent(new Event("clear")));
+});
 
 function randomRGB() {
   const r = Math.floor(Math.random() * 256);
@@ -34,6 +38,5 @@ function randomRGB() {
   const b = Math.floor(Math.random() * 256);
   return `rgb(${r},${g},${b})`;
 }
-
 
 displayGrids(16);
